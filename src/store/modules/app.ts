@@ -65,9 +65,9 @@ const actions = {
     } catch (e) {
       commit('SEND_FAILURE', e);
       const errorMessage =
-        e && e.error_description
-          ? `Oops, ${e.error_description}`
-          : 'Oops, something went wrong!';
+          e && e.error_description
+              ? `Oops, ${e.error_description}`
+              : 'Oops, something went wrong!';
       dispatch('notify', ['red', errorMessage]);
       return;
     }
@@ -75,31 +75,65 @@ const actions = {
   getProposals: async ({ commit, rootState }, space) => {
     commit('GET_PROPOSALS_REQUEST');
     try {
-      let proposals: any = await client.request(`${space.address}/proposals`);
+      const proposals: any = await client.request(`${space.address}/proposals`);
       if (proposals) {
         const defaultStrategies = [
           {
-            name: 'krc21-balance-of',
-              params: {
-                address: space.address, 
-                decimals: space.decimals 
-              }
+            name: 'erc20-balance-of',
+            params: {
+              address: '0xD675fF2B0ff139E14F86D87b7a6049ca7C66d76e',
+              decimals: space.decimals
+            }
+          },
+          {
+            name: 'erc20-balance-of',
+            params: {
+              address: '0x8D32Bb508a4c803C859d7a42D8e71AF904cc2761',
+              decimals: space.decimals
+            }
+          },
+          {
+            name: 'erc20-balance-of',
+            params: {
+              address: '0x18f4f7A1fa6F2c93d40d4Fd83c67E93B88d3a0b1',
+              decimals: space.decimals
+            }
+          },
+          {
+            name: 'erc20-balance-of',
+            params: {
+              address: '0x96192918e6Ac00881a3497C15D8aC4d2b2f3Fd90',
+              decimals: space.decimals
+            }
+          },
+          {
+            name: 'erc20-balance-of',
+            params: {
+              address: '0x5fDd4bCBdc32ec139B3328340FDE9815Fc23E923',
+              decimals: space.decimals
+            }
+          },
+          {
+            name: 'erc20-balance-of',
+            params: {
+              address: '0x21cf81a0F20D6056373242d3302c3E80a1121DE6',
+              decimals: space.decimals
+            }
           }
         ];
 
         let scores;
         try {
-          scores = await getScores(
-            "",
-            defaultStrategies,
-            rootState.web3.network.chainId,
-            Object.values(proposals).map((proposal: any) => proposal.address),
-            'latest'
-          )
+          // scores = await getScores(
+          //     '',
+          //     defaultStrategies,
+          //     rootState.web3.network.chainId,
+          //     Object.values(proposals).map((proposal: any) => proposal.address),
+          //     'latest'
+          // );
         } catch (e) {
           scores = [{}];
         }
-          
 
         // proposals = Object.fromEntries(
         //   Object.entries(proposals).map((proposal: any) => {
@@ -130,67 +164,102 @@ const actions = {
       result.votes = votes;
       const { snapshot } = result.proposal.msg.payload;
       const blockTag =
-        snapshot > rootState.web3.blockNumber ? 'latest' : parseInt(snapshot);
-        const defaultStrategies = [
-          {
-            name: 'krc21-balance-of',
-              params: {
-                address: payload.space.address, 
-                decimals: payload.space.decimals 
-              }
+          snapshot > rootState.web3.blockNumber ? 'latest' : parseInt(snapshot);
+      const defaultStrategies = [
+        {
+          name: 'erc20-balance-of',
+          params: {
+            address: '0xD675fF2B0ff139E14F86D87b7a6049ca7C66d76e',
+            decimals: payload.space.decimals
           }
-        ];
+        },
+        {
+          name: 'erc20-balance-of',
+          params: {
+            address: '0x8D32Bb508a4c803C859d7a42D8e71AF904cc2761',
+            decimals: payload.space.decimals
+          }
+        },
+        {
+          name: 'erc20-balance-of',
+          params: {
+            address: '0x18f4f7A1fa6F2c93d40d4Fd83c67E93B88d3a0b1',
+            decimals: payload.space.decimals
+          }
+        },
+        {
+          name: 'erc20-balance-of',
+          params: {
+            address: '0x96192918e6Ac00881a3497C15D8aC4d2b2f3Fd90',
+            decimals: payload.space.decimals
+          }
+        },
+        {
+          name: 'erc20-balance-of',
+          params: {
+            address: '0x5fDd4bCBdc32ec139B3328340FDE9815Fc23E923',
+            decimals: payload.space.decimals
+          }
+        },
+        {
+          name: 'erc20-balance-of',
+          params: {
+            address: '0x21cf81a0F20D6056373242d3302c3E80a1121DE6',
+            decimals: payload.space.decimals
+          }
+        }
+      ];
 
       const spaceStrategies = payload.space.strategies || defaultStrategies;
       let scores;
 
       try {
         scores = await getScores(
-          "",
-          defaultStrategies,
-          rootState.web3.network.chainId,
-          Object.keys(result.votes),
-          // @ts-ignore
-          blockTag
+            "",
+            defaultStrategies,
+            rootState.web3.network.chainId,
+            Object.keys(result.votes),
+            // @ts-ignore
+            blockTag
         );
       } catch (e) {
         scores = [{}];
       }
-      
+
       result.votes = Object.fromEntries(
-        Object.entries(result.votes)
-          .map((vote: any) => {
-            vote[1].scores = spaceStrategies.map(
-              (strategy, i) => scores[i][vote[1].address] || 0
-            );
-            vote[1].balance = vote[1].scores.reduce((a, b: any) => a + b, 0);
-            return vote;
-          })
-          .sort((a, b) => b[1].balance - a[1].balance)
-          .filter(vote => vote[1].balance > 0)
+          Object.entries(result.votes)
+              .map((vote: any) => {
+                vote[1].scores = spaceStrategies.map(
+                    (strategy, i) => scores[i][vote[1].address] || 0
+                );
+                vote[1].balance = vote[1].scores.reduce((a, b: any) => a + b, 0);
+                return vote;
+              })
+              .sort((a, b) => b[1].balance - a[1].balance)
+              .filter(vote => vote[1].balance > 0)
       );
       result.results = {
         totalVotes: result.proposal.msg.payload.choices.map(
-          (choice, i) =>
-            Object.values(result.votes).filter(
-              (vote: any) => vote.msg.payload.choice === i + 1
-            ).length
+            (choice, i) =>
+                Object.values(result.votes).filter(
+                    (vote: any) => vote.msg.payload.choice === i + 1
+                ).length
         ),
         totalBalances: result.proposal.msg.payload.choices.map((choice, i) =>
-          Object.values(result.votes)
-            .filter((vote: any) => vote.msg.payload.choice === i + 1)
-            .reduce((a, b: any) => a + b.balance, 0)
+            Object.values(result.votes)
+                .filter((vote: any) => vote.msg.payload.choice === i + 1)
+                .reduce((a, b: any) => a + b.balance, 0)
         ),
         totalScores: result.proposal.msg.payload.choices.map((choice, i) =>
-          spaceStrategies.map((strategy, sI) =>
-            Object.values(result.votes)
-              .filter((vote: any) => vote.msg.payload.choice === i + 1)
-              .reduce((a, b: any) => a + b.scores[sI], 0)
-          )
+            spaceStrategies.map((strategy, sI) =>
+                Object.values(result.votes)
+                    .filter((vote: any) => vote.msg.payload.choice === i + 1)
+                    .reduce((a, b: any) => a + b.scores[sI], 0)
+            )
         ),
         totalVotesBalances: Object.values(result.votes).reduce(
-          (a, b: any) => a + b.balance,
-          0
+            (a, b: any) => a + b.balance,
+            0
         )
       };
       commit('GET_PROPOSAL_SUCCESS');
@@ -203,32 +272,72 @@ const actions = {
     commit('GET_POWER_REQUEST');
     try {
       const blockTag =
-        snapshot > rootState.web3.blockNumber ? 'latest' : parseInt(snapshot);
-        const defaultStrategies = [
-          {
-            name: "krc21-balance-of",
-              params: {
-                address: space.address, 
-                decimals: space.decimals 
-              }
+          snapshot > rootState.web3.blockNumber ? 'latest' : parseInt(snapshot);
+      const defaultStrategies = [
+        {
+          name: 'erc20-balance-of',
+          params: {
+            address: '0xD675fF2B0ff139E14F86D87b7a6049ca7C66d76e',
+            decimals: space.decimals
           }
-        ];
+        },
+        {
+          name: 'erc20-balance-of',
+          params: {
+            address: '0x8D32Bb508a4c803C859d7a42D8e71AF904cc2761',
+            decimals: space.decimals
+          }
+        },
+        {
+          name: 'erc20-balance-of',
+          params: {
+            address: '0x18f4f7A1fa6F2c93d40d4Fd83c67E93B88d3a0b1',
+            decimals: space.decimals
+          }
+        },
+        {
+          name: 'erc20-balance-of',
+          params: {
+            address: '0x96192918e6Ac00881a3497C15D8aC4d2b2f3Fd90',
+            decimals: space.decimals
+          }
+        },
+        {
+          name: 'erc20-balance-of',
+          params: {
+            address: '0x5fDd4bCBdc32ec139B3328340FDE9815Fc23E923',
+            decimals: space.decimals
+          }
+        },
+        {
+          name: 'erc20-balance-of',
+          params: {
+            address: '0x21cf81a0F20D6056373242d3302c3E80a1121DE6',
+            decimals: space.decimals
+          }
+        }
+      ];
       let scores;
+      //      "",
+      //     defaultStrategies,
+      //     rootState.web3.network.chainId,
+      //     Object.values(proposals).map((proposal: any) => proposal.address),
+      //     'latest'
       try {
         scores = await getScores(
-          "",
-          defaultStrategies,
-          rootState.web3.network.chainId,
-          [address],
-          // @ts-ignore
-          blockTag
+            "",
+            defaultStrategies,
+            rootState.web3.network.chainId,
+            [address],
+            // @ts-ignore
+            blockTag
         );
       } catch (e) {
         scores = [{}];
       }
       console.log('-----> Scores', scores);
       scores = scores.map((score: any) =>
-        Object.values(score).reduce((a, b: any) => a + b, 0)
+          Object.values(score).reduce((a, b: any) => a + b, 0)
       );
       commit('GET_POWER_SUCCESS');
       return {

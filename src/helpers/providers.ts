@@ -6,9 +6,7 @@ export class Providers {
   public ws?: WebSocketProvider;
 
   async setNetwork() {
-
-    // this.rpc = new JsonRpcProvider('https://rpc.kardiachain.io');
-    const chainId = "kardiachain"
+    const chainId = "24";
     const rpcUrl: any = networks[chainId].rpcUrl;
     this.rpc = new JsonRpcProvider(rpcUrl);
     const wsUrl: any = networks[chainId].wsUrl;

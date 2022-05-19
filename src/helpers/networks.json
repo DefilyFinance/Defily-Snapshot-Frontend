@@ -9,14 +9,23 @@
   },
   "1": {
     "name": "Kardiachain",
+    "chainId": "1",
     "network": "homestead",
     "rpcUrl": "https://rpc.kardiachain.io",
     "wsUrl": "wss://ws-dev.kardiachain.io/",
     "explorer": "https://etherscan.io"
   },
+  "24": {
+    "name": "Kardiachain",
+    "chainId": "24",
+    "network": "homestead",
+    "rpcUrl": "https://rpc.kardiachain.io",
+    "wsUrl": "wss://ws.kardiachain.io",
+    "explorer": "https://explorer.kardiachain.io"
+  },
   "kardiachain": {
     "name": "kardiachain",
-    "chainId": 1,
+    "chainId": "kardiachain",
     "network": "kardiachain",
     "rpcUrl": "https://rpc.kardiachain.io",
     "wsUrl": "wss://ws-dev.kardiachain.io/ws",

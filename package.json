@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@bonustrack/lock": "github:bonustrack/lock#e1437a340b578a1e5a48f37f935578ecdb8b51c8",
-    "@bonustrack/snapshot.js": "github:hongochai10/defilysnapshot.js#master",
+    "@bonustrack/snapshot.js": "github:DefilyFinance/Defily-SnapshotJS#master",
     "@defily/defly-spaces": "^1.0.0",
     "@ensdomains/content-hash": "^2.5.6",
     "@ethersproject/abi": "^5.0.1",
